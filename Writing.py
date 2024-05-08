@@ -4,7 +4,7 @@ from gps3 import agps3
 import time
 import csv
 import threading
-from micropython_adxl343 import adxl343
+import adafruit_adxl34x
 import board
 import busio
 import digitalio
