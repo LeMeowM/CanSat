@@ -4,14 +4,11 @@ from gps3 import agps3
 import time
 import csv
 import threading
-from machine import Pin, I2C
 from micropython_adxl343 import adxl343
 import board
 import busio
 import digitalio
-import numpy as np
-
-
+import picamera
 import adafruit_rfm69
 
 
@@ -54,7 +51,6 @@ data_stream = agps3.DataStream()
 gps_socket.connect()
 gps_socket.watch()
 
-INPUT = ""
 # Output file name
 OUTPUT = str(time.time) + ".csv"
 
@@ -63,8 +59,13 @@ stop_threads = False
 
 main_thread = True
 
+camera = picamera.PiCamera()
+camera.resolution = (640, 480)
+
 
 def receiver():
+    thread_alive = threading.Thread(target=keep_alive, args=(lambda: main_thread))
+    thread_alive.start()
     while main_thread:
         packet = rfm69.receive()
         # Optionally change the receive timeout from its default of 0.5 seconds:
@@ -91,12 +92,13 @@ def receiver():
                     rfm69.send(bytes("no..no..no..", "utf-8"))
                 else:
                     stop_threads = False
+                    camera.start_recording("my_video.h264")
                     thread1 = threading.Thread(
-                        target=write_to_file, args=("file1.txt", lambda: stop_threads)
+                        target=write_to_file, args=(lambda: stop_threads)
                     )
                     thread2 = threading.Thread(
                         target=write_to_file_slow,
-                        args=("file2.txt", lambda: stop_threads),
+                        args=(lambda: stop_threads),
                     )
                     workers.append(thread1, thread2)
                     thread1.start()
@@ -104,17 +106,19 @@ def receiver():
 
             if packet_text == "Stop":
                 stop_threads = True
+                camera.stop_recording()
                 for worker in workers:
                     worker.join()
             if packet_text == "Stop_everythig":
                 main_thread = False
                 stop_threads = True
+                camera.stop_recording()
                 for worker in workers:
                     worker.join()
 
 
-def write_to_file(file_name, stop):
-    with open(file_name, "w") as output_file:
+def write_to_file(stop):
+    with open(OUTPUT, "w") as output_file:
         while True:
             for new_data in gps_socket:
                 if new_data:
@@ -140,14 +144,34 @@ def write_to_file(file_name, stop):
                 break
 
 
-def write_to_file_slow(stop):
+def keep_alive(stop):
     while True:
-        accx, accy, accz = adx.acceleration
-        rfm69.send(bytes(str(accz), "utf-8"))
-        time.sleep(2)
+        rfm69.send(bytes(str("I'm Alive"), "utf-8"))
         if stop():
             print("  Exiting loop.")
             break
+        time.sleep(10)
+
+
+def write_to_file_slow(stop):
+    while True:
+        for new_data in gps_socket:
+            if new_data:
+                data_stream.unpack(new_data)
+                if data_stream.lat != "n/a" and data_stream.lon != "n/a":
+                    rfm69.send(
+                        bytes(
+                            str(data_stream.lon) + " " + str(data_stream.lat), "utf-8"
+                        )
+                    )
+            if stop():
+                print("  Exiting loop.")
+                break
+
+        if stop():
+            print("  Exiting loop.")
+            break
+        time.sleep(2)
 
 
 thread3 = threading.Thread(target=receiver)
