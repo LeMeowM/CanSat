@@ -8,7 +8,6 @@ import adafruit_adxl34x
 import board
 import busio
 import digitalio
-import picamera
 import adafruit_rfm69
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
