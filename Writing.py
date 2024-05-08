@@ -12,6 +12,7 @@ import adafruit_rfm69
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
+
 logger = logging.getLogger(__name__)
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
@@ -21,7 +22,7 @@ RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
 
 # Define pins connected to the chip:
 CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0
-RESET = digitalio.DigitalInOut(board.D6)  # GPIO 6, DPI D1
+RESET = digitalio.DigitalInOut(board.D5)  # GPIO 5, DPI D1
 
 logger.info("Begin initialisation of SPI")
 # Initialize SPI bus.
@@ -29,8 +30,8 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # Initialze RFM radio
 print(board.SCK, board.MOSI, board.MISO)
-print(board.CE0, board.D6)
-rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ)
+print(board.CE0, board.D5)
+rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000)
 
 # Optionally set an encryption key (16 byte AES key). MUST match both
 # on the transmitter and receiver (or be set to None to disable/the default).
@@ -50,8 +51,6 @@ data_stream = agps3.DataStream()
 gps_socket.connect()
 gps_socket.watch()
 logger.info("GPS initialised")
-
-
 
 
 logger.info("Initialising camera")
