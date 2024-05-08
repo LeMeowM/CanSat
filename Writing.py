@@ -43,7 +43,7 @@ rfm69.encryption_key = (
     b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"
 )
 
-i2c = I2C(1, sda=Pin(2), scl=Pin(3))  # Correct I2C pins for RP2040
+i2c = busio.I2C(board.SCL, board.SDA)
 adx = adxl343.ADXL343(i2c)
 
 
