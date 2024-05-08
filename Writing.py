@@ -10,6 +10,8 @@ import busio
 import digitalio
 import picamera
 import adafruit_rfm69
+from picamera2 import Picamera2
+from picamera2.encoders import H264Encoder
 
 
 # Define radio parameters.
@@ -17,9 +19,8 @@ RADIO_FREQ_MHZ = 434.0  # Frequency of the radio in Mhz. Must match your
 # module! Can be a value like 915.0, 433.0, etc.
 
 # Define pins connected to the chip:
-CS = digitalio.DigitalInOut(board.D4) # SPI0 CE0 which is also DPI D4
-RESET = digitalio.DigitalInOut(board.D1) # GPIO 5, DPI D1
-
+CS = digitalio.DigitalInOut(board.D4)  # SPI0 CE0 which is also DPI D4
+RESET = digitalio.DigitalInOut(board.D1)  # GPIO 5, DPI D1
 
 
 # Initialize SPI bus.
@@ -30,12 +31,10 @@ rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ)
 
 # Optionally set an encryption key (16 byte AES key). MUST match both
 # on the transmitter and receiver (or be set to None to disable/the default).
-rfm69.encryption_key = (
-    b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"
-) # TODO: fix keys
+rfm69.encryption_key = b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"  # TODO: fix keys
 
 i2c = busio.I2C(board.SCL, board.SDA)
-adx = adxl343.ADXL343(i2c)
+adx = adafruit_adxl34x.ADXL345(i2c)
 
 
 # GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
@@ -52,9 +51,11 @@ OUTPUT = str(time.time) + ".csv"
 stop_threads = False
 
 main_thread = True
-
-camera = picamera.PiCamera()
-camera.resolution = (640, 480)
+picam2 = Picamera2()
+video_config = picam2.create_video_configuration()
+picam2.configure(video_config)
+encoder = H264Encoder(bitrate=10000000)
+output = "test.h264"
 
 
 def receiver():
@@ -67,11 +68,9 @@ def receiver():
         # If no packet was received during the timeout then None is returned.
         if packet is None:
             # Packet has not been received
-            LED.value = False
             print("Received nothing! Listening again...")
         else:
             # Received a packet!
-            LED.value = True
             # Print out the raw bytes of the packet:
 
             # And decode to ASCII text and print it too.  Note that you always
@@ -86,7 +85,7 @@ def receiver():
                     rfm69.send(bytes("no..no..no..", "utf-8"))
                 else:
                     stop_threads = False
-                    camera.start_recording("my_video.h264")
+                    picam2.start_recording(encoder, output)
                     thread1 = threading.Thread(
                         target=write_to_file, args=(lambda: stop_threads)
                     )
@@ -100,13 +99,13 @@ def receiver():
 
             if packet_text == "Stop":
                 stop_threads = True
-                camera.stop_recording()
+                picam2.stop_recording()
                 for worker in workers:
                     worker.join()
             if packet_text == "Stop_everythig":
                 main_thread = False
                 stop_threads = True
-                camera.stop_recording()
+                picam2.stop_recording()
                 for worker in workers:
                     worker.join()
 
