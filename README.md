@@ -19,7 +19,7 @@ We will need to convert everything from `.py` files to `.mpy` files through the 
 
 # Important Wikis
 - [GNSS](https://www.waveshare.com/wiki/MAX-M8Q_GNSS_HAT#Using_with_Raspberry_Pi)
-- [Camera](https://picamera.readthedocs.io/en/release-1.13/recipes1.html)
+- [Camera](https://github.com/raspberrypi/picamera2?tab=readme-ov-file)
 - [Transciever Hookup](https://learn.sparkfun.com/tutorials/rfm69hcw-hookup-guide/all)
 - [Transciever Tutorial](https://circuitdigest.com/microcontroller-projects/how-to-interface-rfm69hcw-rf-module-with-arduino)
 
