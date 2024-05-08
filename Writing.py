@@ -31,8 +31,6 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 # Initialze RFM radio
 print(board.SCK, board.MOSI, board.MISO)
 print(board.CE0, board.D5)
-version = rfm69.version
-print(f"RFM69 version: {hex(version)}")
 
 rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000)
 
