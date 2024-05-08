@@ -12,7 +12,7 @@ import adafruit_rfm69
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
 # Define radio parameters.
