@@ -20,7 +20,7 @@ RADIO_FREQ_MHZ = 434.0  # Frequency of the radio in Mhz. Must match your
 # module! Can be a value like 915.0, 433.0, etc.
 
 # Define pins connected to the chip:
-CS = digitalio.DigitalInOut(board.D4)  # SPI0 CE0 which is also DPI D4
+CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0
 RESET = digitalio.DigitalInOut(board.D1)  # GPIO 5, DPI D1
 
 logger.info("Begin initialisation of SPI")
@@ -29,7 +29,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # Initialze RFM radio
 print(board.SCK, board.MOSI, board.MISO)
-print(board.D4, board.D1)
+print(board.CE0, board.D1)
 rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ)
 
 # Optionally set an encryption key (16 byte AES key). MUST match both
