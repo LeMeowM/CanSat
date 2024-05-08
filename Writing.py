@@ -56,7 +56,7 @@ gps_socket.watch()
 
 INPUT = ""
 # Output file name
-OUTPUT = ""
+OUTPUT = str(time.time) + ".csv"
 
 
 stop_threads = False
