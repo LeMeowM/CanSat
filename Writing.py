@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
 # Define radio parameters.
-RADIO_FREQ_MHZ = 434.0  # Frequency of the radio in Mhz. Must match your
+RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
 # module! Can be a value like 915.0, 433.0, etc.
 
 # Define pins connected to the chip:
