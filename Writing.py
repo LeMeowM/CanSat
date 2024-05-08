@@ -28,6 +28,8 @@ logger.info("Begin initialisation of SPI")
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 # Initialze RFM radio
+print(board.SCK, board.MOSI, board.MISO)
+print(board.D4, board.D1)
 rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ)
 
 # Optionally set an encryption key (16 byte AES key). MUST match both
