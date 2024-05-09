@@ -30,30 +30,32 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 logger.info("-------Prelaunch Initialisation------")
-logger.info("Begin initialisation of radio")
-# Define radio parameters.
-RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
-# module! Can be a value like 915.0, 433.0, etc.
-
-# Define pins connected to the chip:
-CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0 Pi Pin 24, should be GPIO 8
-logger.debug(f"CE0: {board.CE0}")
-RESET = digitalio.DigitalInOut(board.D25)  # GPIO 25, Pi Pin 22
-logger.debug(f"Reset: {board.D25}")
-
-logger.info("Begin initialisation of SPI")
-# Initialize SPI bus.
-spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-logger.debug(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
-
-
-
-rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000)
-
-# Optionally set an encryption key (16 byte AES key). MUST match both
-# on the transmitter and receiver (or be set to None to disable/the default).
-rfm69.encryption_key = b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"  # TODO: fix keys
-logger.info("Radio initialised successfully")
+RADIO = False
+if(RADIO):
+    logger.info("Begin initialisation of radio")
+    # Define radio parameters.
+    RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
+    # module! Can be a value like 915.0, 433.0, etc.
+    
+    # Define pins connected to the chip:
+    CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0 Pi Pin 24, should be GPIO 8
+    logger.debug(f"CE0: {board.CE0}")
+    RESET = digitalio.DigitalInOut(board.D25)  # GPIO 25, Pi Pin 22
+    logger.debug(f"Reset: {board.D25}")
+    
+    logger.info("Begin initialisation of SPI")
+    # Initialize SPI bus.
+    spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+    logger.debug(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
+    
+    
+    
+    rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000)
+    
+    # Optionally set an encryption key (16 byte AES key). MUST match both
+    # on the transmitter and receiver (or be set to None to disable/the default).
+    rfm69.encryption_key = b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"  # TODO: fix keys
+    logger.info("Radio initialised successfully")
 
 logger.info("initialising accelerometer")
 i2c = busio.I2C(board.SCL, board.SDA)
