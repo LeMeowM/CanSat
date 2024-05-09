@@ -30,8 +30,12 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 logger.info("-------Prelaunch Initialisation------")
-RADIO = False
-if(RADIO):
+Radio = False
+Accelerometer = False
+Camera = False
+GNSS = True
+
+if(Radio):
     logger.info("Begin initialisation of radio")
     # Define radio parameters.
     RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
@@ -56,31 +60,31 @@ if(RADIO):
     # on the transmitter and receiver (or be set to None to disable/the default).
     rfm69.encryption_key = b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"  # TODO: fix keys
     logger.info("Radio initialised successfully")
+if Accelerometer:
+    logger.info("initialising accelerometer")
+    i2c = busio.I2C(board.SCL, board.SDA)
+    adx = adafruit_adxl34x.ADXL345(i2c)
+    logger.info("Accelerometer initialised")
+if GNSS:
+    logger.info("Initialising GPS")
+    # GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
+    gps_socket = agps3.GPSDSocket()
+    # DataStream unpacks the streamed gpsd data into python dictionaries.
+    data_stream = agps3.DataStream()
+    gps_socket.connect()
+    gps_socket.watch()
+    logger.info("GPS initialised")
 
-logger.info("initialising accelerometer")
-i2c = busio.I2C(board.SCL, board.SDA)
-adx = adafruit_adxl34x.ADXL345(i2c)
-logger.info("Accelerometer initialised")
-
-logger.info("Initialising GPS")
-# GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
-gps_socket = agps3.GPSDSocket()
-# DataStream unpacks the streamed gpsd data into python dictionaries.
-data_stream = agps3.DataStream()
-gps_socket.connect()
-gps_socket.watch()
-logger.info("GPS initialised")
-
-
-logger.info("Initialising camera")
-
-picam2 = Picamera2()
-video_config = picam2.create_video_configuration()
-picam2.configure(video_config)
-encoder = H264Encoder(bitrate=10000000)
-output = "test.h264"
-
-logger.info("Camera initialised")
+if Camera:
+    logger.info("Initialising camera")
+    
+    picam2 = Picamera2()
+    video_config = picam2.create_video_configuration()
+    picam2.configure(video_config)
+    encoder = H264Encoder(bitrate=10000000)
+    output = "test.h264"
+    
+    logger.info("Camera initialised")
 
 # Output file name
 OUTPUT = str(time.time) + ".csv"
