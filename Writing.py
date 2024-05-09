@@ -77,7 +77,7 @@ def receiver():
     thread_alive = threading.Thread(target=keep_alive, args=(lambda: main_thread))
     thread_alive.start()
     while main_thread:
-        packet = rfm69.receive()
+        packet = rfm69.receive(with_ack=True)
         # Optionally change the receive timeout from its default of 0.5 seconds:
         # packet = rfm69.receive(timeout=5.0)
         # If no packet was received during the timeout then None is returned.
@@ -154,7 +154,7 @@ def write_to_file(stop):
 
 def keep_alive(stop):
     while True:
-        rfm69.send(bytes(str("I'm Alive"), "utf-8"))
+        rfm69.send_with_ack(bytes(str("I'm Alive"), "utf-8"))
         if stop():
             print("  Exiting loop.")
             break
