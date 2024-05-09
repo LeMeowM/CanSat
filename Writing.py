@@ -13,8 +13,9 @@ from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
 
-logger.setLevel(logging.DEBUG)
+
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
 # Define radio parameters.
