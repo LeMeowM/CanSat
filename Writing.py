@@ -13,6 +13,7 @@ from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
 
+logger.setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
@@ -22,14 +23,14 @@ RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
 
 # Define pins connected to the chip:
 CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0 Pi Pin 24, should be GPIO 8
-logger.info(f"CE0: {board.CE0}")
+logger.debug(f"CE0: {board.CE0}")
 RESET = digitalio.DigitalInOut(board.D25)  # GPIO 25, Pi Pin 22
-logger.info(f"Reset: {board.D25}")
+logger.debug(f"Reset: {board.D25}")
 
 logger.info("Begin initialisation of SPI")
 # Initialize SPI bus.
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-logger.info(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
+logger.debug(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
 
 
 
