@@ -13,7 +13,22 @@ from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
 
+
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
+
 logger.info("-------Prelaunch Initialisation------")
 logger.info("Begin initialisation of radio")
 # Define radio parameters.
@@ -21,16 +36,17 @@ RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
 # module! Can be a value like 915.0, 433.0, etc.
 
 # Define pins connected to the chip:
-CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0
-RESET = digitalio.DigitalInOut(board.D5)  # GPIO 5, DPI D1
+CS = digitalio.DigitalInOut(board.CE0)  # SPI0 CE0 Pi Pin 24, should be GPIO 8
+logger.debug(f"CE0: {board.CE0}")
+RESET = digitalio.DigitalInOut(board.D25)  # GPIO 25, Pi Pin 22
+logger.debug(f"Reset: {board.D25}")
 
 logger.info("Begin initialisation of SPI")
 # Initialize SPI bus.
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+logger.debug(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
 
-# Initialze RFM radio
-print(board.SCK, board.MOSI, board.MISO)
-print(board.CE0, board.D5)
+
 
 rfm69 = adafruit_rfm69.RFM69(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=1000000)
 
