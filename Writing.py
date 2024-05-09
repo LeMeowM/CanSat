@@ -29,7 +29,7 @@ logger.info(f"Reset: {board.D25}")
 logger.info("Begin initialisation of SPI")
 # Initialize SPI bus.
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-logger.log(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
+logger.info(f"SCK: {board.SCK}, MOSI: {board.MOSI}, MISO: {board.MISO}")
 
 
 
