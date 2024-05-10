@@ -96,8 +96,8 @@ def write_to_file():
                         write = csv.writer(output_file, lineterminator="\n")
                         write.writerow(array)
                         time.sleep(0.2)
-                        if time.time() > start + PERIOD_OF_TIME:
-                            break
+            if time.time() > start + PERIOD_OF_TIME:
+                break
 
 
 write_to_file()
