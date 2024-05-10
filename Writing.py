@@ -12,6 +12,7 @@ import adafruit_rfm69
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 import logging
+import sys
 
 
 logger = logging.getLogger(__name__)
@@ -30,12 +31,12 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 logger.info("-------Prelaunch Initialisation------")
-Radio = True
-Accelerometer = False
-Camera = False
-GNSS = True
+all = False
+if "--a" in sys.argc:
+    all = True
 
-if(Radio):
+
+if all or "--radio" in sys.argv:
     logger.info("Begin initialisation of radio")
     # Define radio parameters.
     RADIO_FREQ_MHZ = 433.0  # Frequency of the radio in Mhz. Must match your
@@ -60,12 +61,12 @@ if(Radio):
     # on the transmitter and receiver (or be set to None to disable/the default).
     rfm69.encryption_key = b"\x01\x02\x03\x04\x05\x06\x07\x08\x01\x02\x03\x04\x05\x06\x07\x08"  # TODO: fix keys
     logger.info("Radio initialised successfully")
-if Accelerometer:
+if all or "--acc" in sys.argv:
     logger.info("initialising accelerometer")
     i2c = busio.I2C(board.SCL, board.SDA)
     adx = adafruit_adxl34x.ADXL345(i2c)
     logger.info("Accelerometer initialised")
-if GNSS:
+if all or "--gnss" in sys.argv:
     logger.info("Initialising GPS")
     # GPSDSocket creates a GPSD socket connection & request/retrieve GPSD output.
     gps_socket = agps3.GPSDSocket()
@@ -75,7 +76,7 @@ if GNSS:
     gps_socket.watch()
     logger.info("GPS initialised")
 
-if Camera:
+if all or "--cam" in sys.argv:
     logger.info("Initialising camera")
     
     picam2 = Picamera2()
