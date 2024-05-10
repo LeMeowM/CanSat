@@ -64,7 +64,7 @@ if all or "--cam" in sys.argv:
     logger.info("Camera initialised")
 
 # Output file name
-OUTPUT = str(time.time) + ".csv"
+OUTPUT = str(time.time()) + ".csv"
 
 stop_threads = False
 main_thread = True
