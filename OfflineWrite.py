@@ -76,6 +76,8 @@ PERIOD_OF_TIME = 300  # 5min
 
 def write_to_file():
     with open(OUTPUT, "w") as output_file:
+        write = csv.writer(output_file, lineterminator="\n")
+        write.writerow("time", "lon", "lat", "speed", "accx", "accy", "accz")
         while True:
             for new_data in gps_socket:
                 if new_data:
@@ -83,6 +85,7 @@ def write_to_file():
                     accx, accy, accz = adx.acceleration
                     if data_stream.lat != "n/a" and data_stream.lon != "n/a":
                         array = [
+                            time.time(),
                             float(data_stream.lon),
                             float(data_stream.lat),
                             float(data_stream.alt),
@@ -91,7 +94,6 @@ def write_to_file():
                             float(accy),
                             float(accz),
                         ]
-                        write = csv.writer(output_file, lineterminator="\n")
                         write.writerow(array)
                         time.sleep(0.2)
             if time.time() > start + PERIOD_OF_TIME:
