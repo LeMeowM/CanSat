@@ -32,7 +32,7 @@ logger.addHandler(ch)
 
 logger.info("-------Prelaunch Initialisation------")
 all = False
-if "--a" in sys.argc:
+if "--a" in sys.argv:
     all = True
 
 
