@@ -82,8 +82,7 @@ def write_to_file():
                     data_stream.unpack(new_data)
                     accx, accy, accz = adx.acceleration
                     if data_stream.lat != "n/a" and data_stream.lon != "n/a":
-                        array = []
-                        array.append(
+                        array = [
                             float(data_stream.lon),
                             float(data_stream.lat),
                             float(data_stream.alt),
@@ -91,8 +90,7 @@ def write_to_file():
                             float(accx),
                             float(accy),
                             float(accz),
-                        )
-
+                        ]
                         write = csv.writer(output_file, lineterminator="\n")
                         write.writerow(array)
                         time.sleep(0.2)
