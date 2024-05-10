@@ -22,7 +22,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # add formatter to ch
 ch.setFormatter(formatter)
@@ -54,13 +54,13 @@ cameraOn = False
 if all or "--cam" in sys.argv:
     cameraOn = True
     logger.info("Initialising camera")
-    
+
     picam2 = Picamera2()
     video_config = picam2.create_video_configuration()
     picam2.configure(video_config)
     encoder = H264Encoder(bitrate=10000000)
     output = "test.h264"
-    
+
     logger.info("Camera initialised")
 
 # Output file name
@@ -70,38 +70,11 @@ stop_threads = False
 main_thread = True
 
 logger.info("------Initialisation Complete-------")
+start = time.time()
+PERIOD_OF_TIME = 300  # 5min
 
 
-if packet_text == "Go":
-    if stop_threads == False:
-        print("no..no..no..")
-        rfm69.send(bytes("no..no..no..", "utf-8"))
-    else:
-        stop_threads = False
-        if cameraOn:
-            picam2.start_recording(encoder, output)
-        thread1 = threading.Thread(
-          target=write_to_file, args=(lambda: stop_threads)
-        )
-        thread2 = threading.Thread(
-          target=write_to_file_slow, args=(lambda: stop_threads),
-        )
-        workers.append(thread1, thread2)
-        thread1.start()
-        thread2.start()
-if packet_text == "Stop":
-    stop_threads = True
-    picam2.stop_recording()
-    for worker in workers:
-        worker.join()
-    if packet_text == "Stop_everythig":
-        main_thread = False
-        stop_threads = True
-        picam2.stop_recording()
-        for worker in workers:
-            worker.join()
-
-def write_to_file(stop):
+def write_to_file():
     with open(OUTPUT, "w") as output_file:
         while True:
             for new_data in gps_socket:
@@ -123,40 +96,8 @@ def write_to_file(stop):
                         write = csv.writer(output_file, lineterminator="\n")
                         write.writerow(array)
                         time.sleep(0.2)
-            if stop():
-                print("  Exiting loop.")
-                break
+                        if time.time() > start + PERIOD_OF_TIME:
+                            break
 
 
-def keep_alive(stop):
-    while True:
-        rfm69.send_with_ack(bytes(str("I'm Alive"), "utf-8"))
-        if stop():
-            print("  Exiting loop.")
-            break
-        time.sleep(10)
-
-
-def write_to_file_slow(stop):
-    while True:
-        for new_data in gps_socket:
-            if new_data:
-                data_stream.unpack(new_data)
-                if data_stream.lat != "n/a" and data_stream.lon != "n/a":
-                    rfm69.send(
-                        bytes(
-                            str(data_stream.lon) + " " + str(data_stream.lat), "utf-8"
-                        )
-                    )
-            if stop():
-                print("  Exiting loop.")
-                break
-
-        if stop():
-            print("  Exiting loop.")
-            break
-        time.sleep(2)
-
-
-thread3 = threading.Thread(target=receiver)
-stop_threads = True
+write_to_file()
