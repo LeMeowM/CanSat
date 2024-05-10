@@ -30,7 +30,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 logger.info("-------Prelaunch Initialisation------")
-Radio = False
+Radio = True
 Accelerometer = False
 Camera = False
 GNSS = True
