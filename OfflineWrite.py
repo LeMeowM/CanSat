@@ -86,7 +86,7 @@ start = time.time()
 def write_to_file():
     with open(OUTPUT, "a") as output_file:
         write = csv.writer(output_file, lineterminator="\n")
-        write.writerow(["time", "lon", "lat", "speed", "accx", "accy", "accz"])
+        write.writerow(["time", "lon", "lat", "alt", "speed", "accx", "accy", "accz"])
         while True:
             for new_data in gps_socket:
                 if new_data:
@@ -122,7 +122,7 @@ def write_to_file():
 def write_to_file_safe():
     with open(OUTPUT, "a") as output_file:
         write = csv.writer(output_file, lineterminator="\n")
-        write.writerow(["time", "accx", "accy", "accz"])
+        write.writerow(["time", "lon", "lat", "alt", "speed", "accx", "accy", "accz"])
         while True:
                 accx, accy, accz = adx.acceleration
                 array = [
