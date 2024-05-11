@@ -115,7 +115,7 @@ def write_to_file():
                             float(accz)
                         ]
                     write.writerow(array)
-                    time.sleep(0.2)          
+                    time.sleep(0.1)          
             if time.time() > start + PERIOD_OF_TIME:
                 return "mission successful"
 
