@@ -68,7 +68,7 @@ OUTPUT = str(time.time()) + ".csv"
 stop_threads = False
 main_thread = True
 
-PERIOD_OF_TIME = 300  # 5min
+PERIOD_OF_TIME = 1200  # 20min
 if "--time" in sys.argv:
     try:
         indexplusone = sys.argv[sys.argv.index("--time")+1]
